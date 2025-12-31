@@ -32,7 +32,11 @@ def create_ticket_api(ticket: TicketCreate, db: Session = Depends(get_db)):
     text = f"{created_ticket.title} {created_ticket.description}"
 
     # Send job to Redis queue
-    run_ml_task.delay(created_ticket.id, text)
+    try:
+        run_ml_task.delay(ticket.id, text)
+    except Exception as e:
+        print("Celery unavailable, skipping async ML:", e)
+
 
     return created_ticket
 
