@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.env
+
+# Databases
+*.db
+dump.rdb
+
+# Pytest
+.pytest_cache/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/

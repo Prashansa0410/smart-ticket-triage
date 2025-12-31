@@ -1,0 +1,9 @@
+text,category,priority
+"payment failed amount debited","Payments","High"
+"unable to login account","Login","Medium"
+"app crashes on opening","Technical","High"
+"password reset not working","Login","Low"
+"upi payment failed","Payments","High"
+"money debited not credited","Payments","High"
+"transaction failed","Payments","High"
+"refund not received","Payments","High"
