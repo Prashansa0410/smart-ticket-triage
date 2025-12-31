@@ -2,3 +2,8 @@ fastapi
 uvicorn
 sqlalchemy
 pydantic
+scikit-learn
+numpy
+celery
+redis
+python-dotenv
