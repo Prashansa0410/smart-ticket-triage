@@ -4,22 +4,32 @@ from datetime import datetime
 from app.models import Ticket
 from app.schemas import TicketCreate
 from app.ml.ml_classifier import classify
+from app.celery_worker import run_ml_task
 
-def create_ticket(db: Session, ticket_data: TicketCreate) -> Ticket:
-    ticket = Ticket(
-        title=ticket_data.title,
-        description=ticket_data.description,
+def create_ticket(ticket: TicketCreate, db: Session):
+    # 1️⃣ Save ticket to DB
+    db_ticket = Ticket(
+        title=ticket.title,
+        description=ticket.description,
         status="OPEN",
         category="PENDING",
-        priority="PENDING",
-        confidence=None
+        priority="PENDING"
     )
 
-    db.add(ticket)
+    db.add(db_ticket)
     db.commit()
-    db.refresh(ticket)
+    db.refresh(db_ticket)   # 🔥 THIS GETS THE ID
 
-    return ticket
+    # 2️⃣ Send DB ticket ID to Celery
+    try:
+        run_ml_task.delay(
+            db_ticket.id,
+            f"{db_ticket.title} {db_ticket.description}"
+        )
+    except Exception as e:
+        print("Celery unavailable, skipping async ML:", e)
+
+    return db_ticket
 
 def assign_team(category: str, confidence: float | None) -> str:
     """
